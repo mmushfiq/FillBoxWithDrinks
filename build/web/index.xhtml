@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+ <h:head>
+     <title>İçkilərin qutulara doldurulması</title> 
+     <h:outputStylesheet library="css" name="index.css" />
+     <h:outputScript target="head" library="script" name="jquery-1.11.0.min.js" />
+     <h:outputScript target="head" library="script" name="control_input.js" />
+     <h:outputScript target="head" library="script" name="index.js" />
+ </h:head>
+    
+ <h:body>
+    <h:form prependId="false">
+
+    <h:panelGroup layout="block" styleClass="left-div">
+        
+        <h:panelGrid columns="3" cellpadding="0" cellspacing="0" styleClass="drink-list">
+            <h:outputText value="" />
+            <h:outputText value="İçkiləri seçin" style="font-weight: bold;"/>
+            <h:outputText value="Sayı" style="font-weight: bold;"/>
+
+            <h:selectBooleanCheckbox value="#{indexBean.d.checked_fanta}" /> Fanta
+            <p:inputText value="#{indexBean.d.count_fanta}" />
+             
+            <h:selectBooleanCheckbox value="#{indexBean.d.checked_cola}"  /> Coca Cola
+            <p:inputText value="#{indexBean.d.count_cola}" />
+             
+            <h:selectBooleanCheckbox value="#{indexBean.d.checked_pepsi}" /> Pepsi
+            <p:inputText value="#{indexBean.d.count_pepsi}" />
+             
+            <h:selectBooleanCheckbox value="#{indexBean.d.checked_sprite}" /> Sprite
+            <p:inputText value="#{indexBean.d.count_sprite}" />
+        </h:panelGrid> 
+        <br/>
+        
+        <h:selectBooleanCheckbox value="#{indexBean.d.use_box_size}" styleClass="box-checkbox" /> 
+        <h:outputText value="Qutunun formasını özünüz təyin edin" styleClass="box-text" />
+        <p:selectOneMenu value="#{indexBean.box_size}" style="width: 60px;" styleClass="box-combo" effect="clip">
+           <f:selectItems value="#{indexBean.all_boxes_size}" />
+        </p:selectOneMenu>
+        <p><i>*Qutuların forması seçilmədikdə, random olaraq təyin edilir</i></p>
+
+        <p:commandButton value="İçkiləri qutulara yerləşdirin" actionListener="#{indexBean.showFilledBox()}" update="growl box" style="margin-left: 15px; margin-top: 50px;" >
+            <p:ajaxStatus onstart="$('.box-div').html($('.loading').html());" />
+        </p:commandButton>
+        
+    </h:panelGroup>
+      
+        
+    <h:panelGroup id="box" styleClass="box-div" layout="block">
+        <h3>Doldurulmuş qutular</h3>
+        <div class="loading" style="display: none"><center><img style="margin-top:50px;" width="60px" height="60px" src="resources/image/loading2.gif" /><p>Yüklənir..</p></center></div>
+
+        <h:panelGroup layout="block">
+           <c:forEach items="#{indexBean.drinks_order_map}" var="map" varStatus="loopMap">
+            <p>Qutu #{map.key}:</p>
+ 
+            <table cellspacing="0" cellpadding="0" border="1" >
+              <tbody>
+                <c:forEach items="#{map.value}" varStatus="loop" var="r" step="#{indexBean.columns_list[map.key-1]}">
+                 <tr>
+                     <c:forEach begin="0" end="#{indexBean.columns_list[map.key-1]-1}" var="i">
+                         <td><img src="./resources/image/#{map.value[loop.index+i]}.jpg" width="55" height="55" /></td>
+                     </c:forEach>  
+                 </tr>
+                </c:forEach>
+              </tbody> 
+            </table>
+               
+           </c:forEach>
+        </h:panelGroup>
+
+    </h:panelGroup>
+ 
+    <p:growl id="growl" sticky="false" showDetail="true" life="3000" />
+    
+    <!--
+    JSF`in oz h:graphicImage tag`ini yuxaridaki dovrden chixardim, chunki 4000 dovrluk for`da <img> tagina nisbeten teqriben 25-30 defe daha zeif ishleyirdi
+    <td><h:graphicImage library="image" name="{map.value[loop.index+i]}.jpg" width="55" height="55" /></td> 
+    -->
+    
+  </h:form>
+ </h:body>
+</html>
